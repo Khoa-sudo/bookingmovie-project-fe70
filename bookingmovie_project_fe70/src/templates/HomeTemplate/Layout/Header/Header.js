@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 export default function Header(props) {
   return (
@@ -18,41 +19,35 @@ export default function Header(props) {
         </a>
         <ul className="items-stretch hidden space-x-3 lg:flex">
           <li className="flex">
-            <a
+            <NavLink
               rel="noopener noreferrer"
-              href="#"
-              className="text-white flex items-center px-4 -mb-1 border-b-2 dark:border-transparent dark:text-violet-400 dark:border-violet-400"
+              to='/home'
+              className=" border-white text-white flex items-center px-4 -mb-1 dark:border-transparent dark:text-violet-400 dark:border-violet-400"
+              activeClassName="border-b-2 border-white"
             >
-              Link
-            </a>
+              Home
+            </NavLink>
           </li>
           <li className="flex">
-            <a
+            <NavLink
               rel="noopener noreferrer"
-              href="#"
-              className="text-white flex items-center px-4 -mb-1 border-b-2 dark:border-transparent"
+              to='/contact'
+              className=" border-white text-white flex items-center px-4 -mb-1  dark:border-transparent"
+              activeClassName="border-b-2 border-white"
             >
-              Link
-            </a>
+              Contact
+            </NavLink>
           </li>
           <li className="flex">
-            <a
+            <NavLink
               rel="noopener noreferrer"
-              href="#"
-              className="text-white flex items-center px-4 -mb-1 border-b-2 dark:border-transparent"
+              to='/news'
+              className=" border-white text-white flex items-center px-4 -mb-1  dark:border-transparent"
+              activeClassName="border-b-2 border-white"
             >
-              Link
-            </a>
-          </li>
-          <li className="flex">
-            <a
-              rel="noopener noreferrer"
-              href="#"
-              className="text-white flex items-center px-4 -mb-1 border-b-2 dark:border-transparent"
-            >
-              Link
-            </a>
-          </li>
+              News
+            </NavLink>
+          </li>          
         </ul>
         <div className="items-center flex-shrink-0 hidden lg:flex">
           <button className="self-center px-8 py-3 rounded">Sign in</button>
