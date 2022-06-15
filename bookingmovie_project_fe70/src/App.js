@@ -1,21 +1,27 @@
 import "./App.css";
-import BaiTapTongHop from "./BaiTapTongHop/BaiTapTongHop";
-import Demo from "./Lodash/Demo";
-import BaiTapTongHopTailWind from "./TailWindComponent/BaiTapTongHopTailWind";
-import DemoGrid from "./TailWindComponent/DemoGrid";
-import FlexDemo from "./TailWindComponent/FlexDemo";
-import PaddingMarginDemo from "./TailWindComponent/PaddingMarginDemo";
+import { createBrowserHistory } from "history";
+import { Router, Route, Switch } from "react-router";
+import { HomeTemplate } from "./templates/HomeTemplate/HomeTemplate";
+import Home from "./pages/Home/Home";
+import Contact from "./pages/Contact/Contact";
+import News from "./pages/News/News";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+export const history = createBrowserHistory();
 
 function App() {
   return (
-    <div className="App">
-      {/* <DemoGrid /> */}
-      {/* <PaddingMarginDemo /> */}
-      {/* <FlexDemo /> */}
-      {/* <BaiTapTongHopTailWind /> */}
-      {/* <Demo /> */}
-      <BaiTapTongHop />
-    </div>
+    <Router history={history}>
+      <Switch>
+        <HomeTemplate exact path="/" Component={Home} />
+        <HomeTemplate exact path="/home" Component={Home} />
+        <HomeTemplate exact path="/contact" Component={Contact} />
+        <HomeTemplate exact path="/news" Component={News} />
+
+        <Route path="/login" exact Component={Login} />
+        <Route path="/register" exact Component={Register} />
+      </Switch>
+    </Router>
   );
 }
 
