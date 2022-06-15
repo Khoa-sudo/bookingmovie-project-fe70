@@ -9,12 +9,7 @@ import PaddingMarginDemo from "./TailWindComponent/PaddingMarginDemo";
 function App() {
   return (
     <div className="App">
-      {/* <DemoGrid /> */}
-      {/* <PaddingMarginDemo /> */}
-      {/* <FlexDemo /> */}
-      {/* <BaiTapTongHopTailWind /> */}
-      {/* <Demo /> */}
-      <BaiTapTongHop />
+     
     </div>
   );
 }
