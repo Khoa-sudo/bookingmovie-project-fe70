@@ -1,11 +1,10 @@
 import { Fragment } from "react";
 import { Route } from "react-router-dom";
+import Footer from "./Layout/Footer/Footer";
 import Header from "./Layout/Header/Header";
-import HomeCarousel from "./Layout/HomeCarousel/HomeCarousel";
-export const HomeTemplate = (props) => { //path, exact, Component
+export const HomeTemplate = (props) => {
+  //path, exact, Component
   const { Component, ...restRoute } = props;
- console.log('restRoute',restRoute);
- console.log(props);
   return (
     <Route
       {...restRoute}
@@ -16,10 +15,11 @@ export const HomeTemplate = (props) => { //path, exact, Component
         return (
           <Fragment>
             {/* Fragment là 1 thẻ trong suốt (giống div) nhưng không đẩy dòng xuống */}
-            <Header {...propsRoute}/>
-            <HomeCarousel {...propsRoute}/>
+            <Header {...propsRoute} />
+
             <Component {...propsRoute} />
-            <footer>Đây là footer</footer>
+            {/* Trang Footer tĩnh nên không cần truyền props */}
+            <Footer />
           </Fragment>
         );
       }}
