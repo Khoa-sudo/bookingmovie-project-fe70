@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Radio, Space, Tabs } from "antd";
+import { Tabs } from "antd";
 import moment from "moment";
 
 export default function HomeMenu(props) {
@@ -14,7 +14,7 @@ export default function HomeMenu(props) {
       return (
         <TabPane
           tab={
-            <img src={heThongRap.logo} className="rounded-full" width="50" />
+            <img src={heThongRap.logo} alt='Hệ thống rạp' className="rounded-full" width="50" />
           }
           key={index}
         >
@@ -28,6 +28,7 @@ export default function HomeMenu(props) {
                       <img
                         src="https://quangcaongoaitroi.com/wp-content/uploads/2020/02/quang-cao-tai-rap-chieu-phim-5.jpg"
                         width="50"
+                        alt="Quầy bán vé"
                       />
                       <div className="text-left ml-2">
                         {cumRap.tenCumRap}

@@ -1,9 +1,8 @@
-import React, { Component } from "react";
 import { GROUPID } from "../util/settings/config";
 import { baseService } from "./baseService";
 
 export class QuanLyPhimService extends baseService {
-  constructor() {
+  constructor(props) {
     super();
   }
   layDanhSachBanner = () => {

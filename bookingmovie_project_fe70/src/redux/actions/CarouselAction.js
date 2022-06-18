@@ -1,6 +1,4 @@
-import axios from "axios";
 import { quanLyPhimService } from "../../services/QuanLyPhimService";
-import { DOMAIN } from "../../util/settings/config";
 import { GET_IMG_CAROUSEL } from "./types/CarouselType";
 
 export const getCarouselAction = () => {

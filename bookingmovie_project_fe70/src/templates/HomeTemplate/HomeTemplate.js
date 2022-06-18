@@ -2,7 +2,6 @@ import { Fragment } from "react";
 import { Route } from "react-router-dom";
 import Footer from "./Layout/Footer/Footer";
 import Header from "./Layout/Header/Header";
-import HomeCarousel from "./Layout/HomeCarousel/HomeCarousel";
 export const HomeTemplate = (props) => {
   //path, exact, Component
   const { Component, ...restRoute } = props;
@@ -17,8 +16,6 @@ export const HomeTemplate = (props) => {
           <Fragment>
             {/* Fragment là 1 thẻ trong suốt (giống div) nhưng không đẩy dòng xuống */}
             <Header {...propsRoute} />
-
-            <HomeCarousel {...propsRoute} />
 
             <Component {...propsRoute} />
             {/* Trang Footer tĩnh nên không cần truyền props */}

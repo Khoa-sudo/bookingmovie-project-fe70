@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+
 import { GROUPID } from "../util/settings/config";
 import { baseService } from "./baseService";
 
 export class QuanLyRapService extends baseService {
-  constructor() {
+  constructor(props) {
     super();
   }
   layDanhSachHeThongRap = () => {
@@ -14,6 +14,9 @@ export class QuanLyRapService extends baseService {
   layThongTinHeThongRap = () => {
     return this.get(`/api/QuanLyRap/LayThongTinHeThongRap`);
   };
+  layThongTinLichChieuPhim=(maPhim)=>{
+    return this.get(`/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${maPhim}`)
+  }
 }
 
 export const quanLyRapService = new QuanLyRapService();
