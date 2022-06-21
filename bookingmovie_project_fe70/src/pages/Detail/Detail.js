@@ -117,8 +117,10 @@ export default function Detail(props) {
                               <div className="thong-tin-lich-chieu grid grid-cols-4">
                                 {cumRap.lichChieuPhim?.map(
                                   (lichChieu, index) => {
+                                    console.log('sss', lichChieu.maLichChieu)
                                     return (
                                       <NavLink
+                                        to={`/checkout/${lichChieu.maLichChieu}`}
                                         key={index}
                                         className="mt-3 col-span-1 text-green-800"
                                       >

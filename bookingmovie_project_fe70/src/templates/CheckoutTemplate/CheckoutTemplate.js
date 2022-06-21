@@ -3,9 +3,9 @@ import { Redirect, Route } from "react-router-dom";
 import { USER_LOGIN } from "../../util/settings/config";
 
 const CheckoutTemplate = (props) => {
-  const { Component, restRoute } = props;
+  const { Component, ...restRoute } = props;
   if (!localStorage.getItem(USER_LOGIN)) {
-    return <Redirect to="/register" />;
+    return <Redirect to="/login" />;
   } else {
   }
   return (

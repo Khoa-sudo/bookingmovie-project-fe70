@@ -48,7 +48,7 @@ export default function Header(props) {
             >
               News
             </NavLink>
-          </li>          
+          </li>                
         </ul>
         <div className="items-center flex-shrink-0 hidden lg:flex">
           <button onClick={()=>{

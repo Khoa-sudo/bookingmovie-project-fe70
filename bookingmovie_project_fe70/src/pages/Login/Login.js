@@ -1,11 +1,10 @@
 import React from "react";
 import "./Login.css";
 import { useFormik } from "formik";
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { dangNhapAction } from "../../redux/actions/QuanLyNguoiDungAction";
 const Login = () => {
-  const history=useHistory();
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
@@ -13,8 +12,8 @@ const Login = () => {
       matKhau: "",
     },
     onSubmit: (values) => {
+      console.log(values);
       dispatch(dangNhapAction(values));
-      history.push('/')
     },
   });
   return (

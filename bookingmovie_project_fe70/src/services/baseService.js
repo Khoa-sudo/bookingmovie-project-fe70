@@ -18,7 +18,7 @@ export class baseService {
       method: "POST",
       data: model,
       headers: { 
-        // Authorization: "Bearer " + localStorage.getItem(TOKEN)
+        Authorization: "Bearer " + localStorage.getItem(TOKEN),
         TokenCybersoft: TOKEN_CYBERSOFT,
        }, //JWT
     });
