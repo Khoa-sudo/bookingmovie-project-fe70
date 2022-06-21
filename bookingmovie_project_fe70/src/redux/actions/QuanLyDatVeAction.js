@@ -1,5 +1,11 @@
 import { quanLyDatVeService } from "../../services/QuanLyDatVeService";
-import { SET_CHI_TIET_PHONG_VE } from "./types/QuanLyDatVeType";
+import { ThongTinDatVe } from "../../_core/models/ThongTinDatVe";
+import { DISPLAY_LOADING, HIDE_LOADING } from "../types/LoadingType";
+import { displayLoadingAction, hideLoadingAction } from "./LoadingAction";
+import {
+  DAT_VE_HOAN_TAT,
+  SET_CHI_TIET_PHONG_VE,
+} from "./types/QuanLyDatVeType";
 
 export const layChiTietPhongVeAction = (maLichChieu) => {
   return async (dispatch) => {
@@ -18,13 +24,20 @@ export const layChiTietPhongVeAction = (maLichChieu) => {
   };
 };
 
-export const datVeAction=(thongTinDatVe)=>{
-  return async dispatch=>{
+export const datVeAction = (thongTinDatVe = new ThongTinDatVe()) => {
+  return async (dispatch) => {
     try {
-      const result = await quanLyDatVeService.datVe(thongTinDatVe);      
-      window.location.reload();
+      dispatch(displayLoadingAction);
+      const result = await quanLyDatVeService.datVe(thongTinDatVe);
+      console.log("result", result.data.content);
+      //Đặt vé thành công => gọi API load lại phòng vé
+      // await: đợi load phòng vé lại xong mới tắt Loading
+      await dispatch(layChiTietPhongVeAction(thongTinDatVe.maLichChieu));
+      await dispatch({ type: DAT_VE_HOAN_TAT });
+      await dispatch(hideLoadingAction);
     } catch (error) {
-      alert(error.response?.data)
+      dispatch(hideLoadingAction);
+      alert(error.response?.data);
     }
-  }
-}
+  };
+};
