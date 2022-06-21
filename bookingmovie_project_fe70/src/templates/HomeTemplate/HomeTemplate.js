@@ -15,8 +15,7 @@ export const HomeTemplate = (props) => {
         return (
           <Fragment>
             {/* Fragment là 1 thẻ trong suốt (giống div) nhưng không đẩy dòng xuống */}
-            <Header {...propsRoute} />
-
+            <Header {...propsRoute} />            
             <Component {...propsRoute} />
             {/* Trang Footer tĩnh nên không cần truyền props */}
             <Footer />
