@@ -8,7 +8,8 @@ import {
 
 const stateDefault = {
   chiTietPhongVe: new ThongTinLichChieu(),
-  danhSachGheDangDat: [],
+  danhSachGheDangDat: [], //danh sách ghế đang đặt
+  danhSachGheKhachDat: [],
   tabActive: "1",
 };
 
@@ -39,6 +40,9 @@ export const QuanLyDatVeReducer = (state = stateDefault, action) => {
       return { ...state };
     case "CHUYEN_TAB_ACTIVE":
       state.tabActive = action.number;
+      return { ...state };
+    case "DAT_GHE":
+      state.danhSachGheKhachDat = action.arrGheKhachDat;
       return { ...state };
     default:
       return { ...state };

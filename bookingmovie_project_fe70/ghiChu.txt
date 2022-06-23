@@ -2,3 +2,4 @@ dấu ? - Optional chaining operator
 check giá trị rỗng và bỏ qua thay vì báo lỗi
 
 Realtime = websocket của trình duyệt
+Dùng công nghệ SignalR - websocket
