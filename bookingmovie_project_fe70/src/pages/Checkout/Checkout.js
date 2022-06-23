@@ -1,20 +1,22 @@
-import { MehOutlined, SmileOutlined } from "@ant-design/icons";
-import React, { Fragment, useEffect, useState } from "react";
+import { HomeOutlined, MehOutlined, SmileOutlined } from "@ant-design/icons";
+import React, { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   datGheAction,
   datVeAction,
   layChiTietPhongVeAction,
 } from "../../redux/actions/QuanLyDatVeAction";
-import { CHUYEN_TAB, DAT_VE } from "../../redux/actions/types/QuanLyDatVeType";
 import "./Checkout.css";
 import _ from "lodash";
 import style from "./Checkout.module.css";
 import { ThongTinDatVe } from "../../_core/models/ThongTinDatVe";
-import { Pagination, Tabs } from "antd";
+import { Tabs } from "antd";
 import { layThongTinNguoiDungAction } from "../../redux/actions/QuanLyNguoiDungAction";
 import moment from "moment";
 import { connection } from "../../index";
+import { history } from "../../App";
+import { TOKEN, USER_LOGIN } from "../../util/settings/config";
+import { NavLink } from "react-router-dom";
 
 function Checkout(props) {
   const { nguoiDungDangNhap } = useSelector(
@@ -63,7 +65,7 @@ function Checkout(props) {
         type: "DAT_GHE",
         arrGheKhachDat,
       });
-      //Cài đặt sự kiện khi reload trang
+      // Cài đặt sự kiện khi reload trang
       window.addEventListener("beforeunload", clearGhe);
 
       return () => {
@@ -306,11 +308,52 @@ const { TabPane } = Tabs;
 
 export default function (props) {
   const { tabActive } = useSelector((state) => state.QuanLyDatVeReducer);
-
+  const { nguoiDungDangNhap } = useSelector(
+    (state) => state.QuanLyNguoiDungReducer
+  );
   const dispatch = useDispatch();
+  const operations = (
+    <Fragment>
+      {!_.isEmpty(nguoiDungDangNhap) ? (
+        <Fragment>
+          <button
+            onClick={() => {
+              history.push("/profile");
+            }}
+          >
+            <div
+              style={{
+                width: "50px",
+                height: "50px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              className="ml-4 bg-red-200 rounded-full"
+            >
+              {nguoiDungDangNhap.taiKhoan.substr(0, 1)}
+            </div>
+            Hello, {nguoiDungDangNhap.taiKhoan}
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem(USER_LOGIN);
+              localStorage.removeItem(TOKEN);
+              history.push("/");
+            }}
+          >
+            Đăng xuất
+          </button>
+        </Fragment>
+      ) : (
+        "!"
+      )}
+    </Fragment>
+  );
   return (
     <div className="p-5">
       <Tabs
+        tabBarExtraContent={operations}
         defaultActiveKey="1"
         activeKey={tabActive}
         onChange={(key) => {
@@ -319,7 +362,6 @@ export default function (props) {
             number: key.toString(),
           });
         }}
-        centered
       >
         <TabPane tab="01 CHỌN GHẾ & THANH TOÁN" key="1">
           <Checkout {...props} />
@@ -327,6 +369,26 @@ export default function (props) {
         <TabPane tab="02 KẾT QUẢ ĐẶT VÉ" key="2">
           <KetQuaDatVe {...props} />
         </TabPane>
+        <TabPane
+          tab={
+            <div
+              className="text-center"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <NavLink to="/">
+                <HomeOutlined
+                  className="text-black"
+                  style={{ marginLeft: 10, fontSize: 25 }}
+                />
+              </NavLink>
+            </div>
+          }
+          key="3"
+        ></TabPane>
       </Tabs>
     </div>
   );
@@ -335,9 +397,6 @@ export default function (props) {
 function KetQuaDatVe(props) {
   const dispatch = useDispatch();
   const { thongTinNguoiDung } = useSelector(
-    (state) => state.QuanLyNguoiDungReducer
-  );
-  const { nguoiDungDangNhap } = useSelector(
     (state) => state.QuanLyNguoiDungReducer
   );
   useEffect(() => {

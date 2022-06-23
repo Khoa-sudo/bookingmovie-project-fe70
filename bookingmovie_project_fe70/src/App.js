@@ -11,8 +11,8 @@ import Checkout from "./pages/Checkout/Checkout";
 import { Router, Switch } from "react-router-dom";
 import CheckoutTemplate from "./templates/CheckoutTemplate/CheckoutTemplate";
 import { UserTemplate } from "./templates/UserTemplate/UserTemplate";
-import { Suspense, lazy } from "react";
 import Loading from "./components/Loading/Loading";
+import Profile from "./pages/Profile/Profile";
 
 //sử dụng loading lazy
 
@@ -21,13 +21,14 @@ export const history = createBrowserHistory();
 function App() {
   return (
     <Router history={history}>
-      <Loading />
+      <Loading /> 
       <Switch>
         <HomeTemplate exact path="/" Component={Home} />
         <HomeTemplate exact path="/home" Component={Home} />
         <HomeTemplate exact path="/contact" Component={Contact} />
         <HomeTemplate exact path="/news" Component={News} />
         <HomeTemplate exact path="/detail/:id" Component={Detail} />
+        <HomeTemplate exact path="/profile" Component={Profile} />
         <CheckoutTemplate exact path="/checkout/:id" Component={Checkout} />
 
         <UserTemplate path="/login" exact Component={Login} />

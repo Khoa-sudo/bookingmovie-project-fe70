@@ -14,7 +14,12 @@ export default function HomeMenu(props) {
       return (
         <TabPane
           tab={
-            <img src={heThongRap.logo} alt='Hệ thống rạp' className="rounded-full" width="50" />
+            <img
+              src={heThongRap.logo}
+              alt="Hệ thống rạp"
+              className="rounded-full"
+              width="50"
+            />
           }
           key={index}
         >
@@ -64,7 +69,7 @@ export default function HomeMenu(props) {
                                     return (
                                       <NavLink
                                         className="text-xl text-orange-400"
-                                        to="/"
+                                        to={`/checkout/${lichChieu.maLichChieu}`}
                                         key={index}
                                       >
                                         {moment(

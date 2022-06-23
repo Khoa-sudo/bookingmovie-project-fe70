@@ -38,7 +38,7 @@ export const datVeAction = (thongTinDatVe = new ThongTinDatVe()) => {
       await dispatch({ type: DAT_VE_HOAN_TAT });
       await dispatch(hideLoadingAction);
 
-      let userLogin = getState().QuanLyNguoiDungReducer.nguoiDungDangNhap;
+      let userLogin = getState().QuanLyNguoiDungReducer.userLogin;
       connection.invoke(
         "datGheThanhCong",
         userLogin.taiKhoan,

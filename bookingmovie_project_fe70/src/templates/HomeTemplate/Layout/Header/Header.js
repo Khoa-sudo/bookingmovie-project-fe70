@@ -1,8 +1,68 @@
-import React from "react";
+import { Select } from "antd";
+import React, { Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import { history } from "../../../../App";
-
+//Hook đa ngôn ngữ
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import _ from "lodash";
+import { TOKEN, USER_LOGIN } from "../../../../util/settings/config";
 export default function Header(props) {
+  const { nguoiDungDangNhap } = useSelector(
+    (state) => state.QuanLyNguoiDungReducer
+  );
+  const handleChange = (value) => {
+    i18n.changeLanguage(value);
+  };
+  const { Option } = Select;
+  const { t, i18n } = useTranslation();
+  const renderLogin = () => {
+    if (_.isEmpty(nguoiDungDangNhap)) {
+      return (
+        <Fragment>
+          <button
+            onClick={() => {
+              history.push("/login");
+            }}
+            className="self-center px-8 py-3 rounded"
+          >
+            {t("Signin")}
+          </button>
+          <button
+            onClick={() => {
+              history.push("/register");
+            }}
+            className="self-center px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-gray-900"
+          >
+            {t("Signup")}
+          </button>
+        </Fragment>
+      );
+    }
+    return (
+      <Fragment>
+      <button
+            onClick={() => {
+              history.push("/profile");
+            }}
+            className="self-center px-8 py-3 rounded"
+          >
+            {`Xin chào, ${nguoiDungDangNhap.taiKhoan}`}
+          </button>
+        <button
+          className="text-yellow-500 mr-5"
+          onClick={() => {
+            localStorage.removeItem(USER_LOGIN);
+            localStorage.removeItem(TOKEN);
+            history.push("/");
+            window.location.reload();
+          }}
+        >
+          Đăng xuất
+        </button>
+      </Fragment>
+    );
+  };
   return (
     <header className="p-4 dark:bg-gray-800 dark:text-gray-100 bg-opacity-40 bg-black text-white fixed w-full z-10">
       <div className="container flex justify-between h-16 mx-auto">
@@ -22,45 +82,54 @@ export default function Header(props) {
           <li className="flex">
             <NavLink
               rel="noopener noreferrer"
-              to='/home'
+              to="/home"
               className=" border-white text-white flex items-center px-4 -mb-1 dark:border-transparent dark:text-violet-400 dark:border-violet-400"
               activeClassName="border-b-2 border-white"
             >
-              Home
+              {t("Home")}
             </NavLink>
           </li>
           <li className="flex">
             <NavLink
               rel="noopener noreferrer"
-              to='/contact'
+              to="/contact"
               className=" border-white text-white flex items-center px-4 -mb-1  dark:border-transparent"
               activeClassName="border-b-2 border-white"
             >
-              Contact
+              {t("Contact")}
             </NavLink>
           </li>
           <li className="flex">
             <NavLink
               rel="noopener noreferrer"
-              to='/news'
+              to="/news"
               className=" border-white text-white flex items-center px-4 -mb-1  dark:border-transparent"
               activeClassName="border-b-2 border-white"
             >
-              News
+              {t("News")}
             </NavLink>
-          </li>                
+          </li>
         </ul>
         <div className="items-center flex-shrink-0 hidden lg:flex">
-          <button onClick={()=>{
-            history.push('/login')
-          }} className="self-center px-8 py-3 rounded">Sign in</button>
-          <button
-          onClick={()=>{
-            history.push('/register')
-          }}
-           className="self-center px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-gray-900">
-            Sign up
-          </button>
+          {renderLogin()}
+        </div>
+        <div className="items-center flex-shrink-0 hidden lg:flex">
+          <Select
+            defaultValue="en"
+            style={{
+              width: 120,
+            }}
+            onChange={handleChange}
+          >
+            <Option value="en">English</Option>
+            <Option value="vi">Vietnamese</Option>
+            <Option value="chi">Chinese</Option>
+          </Select>
+        </div>
+        <div className="items-center flex-shrink-0 hidden lg:flex">
+          <h2 className="text-white self-center px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-gray-900">
+            {t("Hello")}
+          </h2>
         </div>
         <button className="p-4 lg:hidden">
           <svg
