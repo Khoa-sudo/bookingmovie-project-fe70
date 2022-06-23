@@ -1,39 +1,86 @@
-import {
-  AndroidOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  FrownOutlined,
-  MehOutlined,
-  SmileOutlined,
-} from "@ant-design/icons";
+import { HomeOutlined, MehOutlined, SmileOutlined } from "@ant-design/icons";
 import React, { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  datGheAction,
   datVeAction,
   layChiTietPhongVeAction,
 } from "../../redux/actions/QuanLyDatVeAction";
-import { DAT_VE } from "../../redux/actions/types/QuanLyDatVeType";
 import "./Checkout.css";
 import _ from "lodash";
 import style from "./Checkout.module.css";
 import { ThongTinDatVe } from "../../_core/models/ThongTinDatVe";
-import { USER_LOGIN } from "../../util/settings/config";
-export default function Checkout(props) {
+import { Tabs } from "antd";
+import { layThongTinNguoiDungAction } from "../../redux/actions/QuanLyNguoiDungAction";
+import moment from "moment";
+import { connection } from "../../index";
+import { history } from "../../App";
+import { TOKEN, USER_LOGIN } from "../../util/settings/config";
+import { NavLink } from "react-router-dom";
+
+function Checkout(props) {
   const { nguoiDungDangNhap } = useSelector(
     (state) => state.QuanLyNguoiDungReducer
   );
-  const { chiTietPhongVe, danhSachGheDangDat } = useSelector(
-    (state) => state.QuanLyDatVeReducer
-  );
+  const { chiTietPhongVe, danhSachGheDangDat, danhSachGheKhachDat } =
+    useSelector((state) => state.QuanLyDatVeReducer);
 
   const { thongTinPhim, danhSachGhe } = chiTietPhongVe;
   const dispatch = useDispatch();
 
   useEffect(() => {
+    //Gọi hàm tạo ra 1 async function
     const id = props.match.params.id;
+
     const action = layChiTietPhongVeAction(id);
+
     dispatch(action);
+
+    //có 1 client thực hiện đặt vé thành công mình sẽ load lại ds phòng vé của lịch chiếu đó
+    connection.on("datVeThanhCong", () => {
+      dispatch(action);
+    });
+    //Vừa vào trang load tất cả ghế của các người khác đang đặt
+    connection.invoke("loadDanhSachGhe", props.match.params.id);
+
+    //Load danh sách ghế đang đặt từ server về
+    //Lắng nghe tín hiệu từ server trả về
+    connection.on("loadDanhSachGheDaDat", (dsGheKhachDat) => {
+      //Bước 1: Loại mình ra khỏi danh sách
+      dsGheKhachDat = dsGheKhachDat.filter(
+        (item) => item.taiKhoan !== nguoiDungDangNhap.taiKhoan
+      );
+
+      //Bước 2: gộp danh sách ghế khách đặt ở tất cả user thành 1 mảng chung
+      let arrGheKhachDat = dsGheKhachDat.reduce((result, item, index) => {
+        let arrGhe = JSON.parse(item.danhSachGhe);
+
+        return [...result, ...arrGhe];
+      }, []);
+      //Đưa dữ liệu ghế khách đặt cập nhật redux
+      arrGheKhachDat = _.uniqBy(arrGheKhachDat, "maGhe");
+
+      //
+      dispatch({
+        type: "DAT_GHE",
+        arrGheKhachDat,
+      });
+      // Cài đặt sự kiện khi reload trang
+      window.addEventListener("beforeunload", clearGhe);
+
+      return () => {
+        clearGhe();
+        window.removeEventListener("beforeunload", clearGhe);
+      };
+    });
   }, []);
+  const clearGhe = function (event) {
+    connection.invoke(
+      "huyDat",
+      nguoiDungDangNhap.taiKhoan,
+      props.match.params.id
+    );
+  };
   const renderSeats = () => {
     return danhSachGhe?.map((ghe, index) => {
       let classGheVip = ghe.loaiGhe === "Vip" ? "gheVip" : "";
@@ -43,7 +90,14 @@ export default function Checkout(props) {
       let indexGheDD = danhSachGheDangDat.findIndex(
         (gheDD) => gheDD.maGhe === ghe.maGhe
       );
-      if (indexGheDD != -1) {
+      let classGheKhachDat = "";
+      let indexGheKD = danhSachGheKhachDat.findIndex(
+        (gheKD) => gheKD.maGhe === ghe.maGhe
+      );
+      if (indexGheKD !== -1) {
+        classGheKhachDat = "gheKhachDat";
+      }
+      if (indexGheDD !== -1) {
         classGheDaDat = "gheDangDat";
       }
 
@@ -57,16 +111,14 @@ export default function Checkout(props) {
         <Fragment key={index}>
           <button
             onClick={() => {
-              dispatch({
-                type: DAT_VE,
-                gheDuocChon: ghe,
-              });
+              const action = datGheAction(ghe, props.match.params.id);
+              dispatch(action);
             }}
-            disabled={ghe.daDat}
-            className={`ghe ${classGheNguoiDungDat} ${classGheDangDat} ${classGheVip} ${classGheDaDat} text-center`}
+            disabled={ghe.daDat | (classGheKhachDat !== "")}
+            className={`ghe ${classGheKhachDat} ${classGheNguoiDungDat} ${classGheDangDat} ${classGheVip} ${classGheDaDat} text-center`}
           >
             {ghe.daDat ? (
-              classGheNguoiDungDat != "" ? (
+              classGheNguoiDungDat !== "" ? (
                 <SmileOutlined
                   style={{ marginBottom: 7.5, fontWeight: "bold" }}
                 />
@@ -75,6 +127,10 @@ export default function Checkout(props) {
                   style={{ marginBottom: 7.5, fontWeight: "bold" }}
                 />
               )
+            ) : classGheKhachDat !== "" ? (
+              <SmileOutlined
+                style={{ marginBottom: 7.5, fontWeight: "bold" }}
+              />
             ) : (
               ghe.stt
             )}
@@ -107,21 +163,34 @@ export default function Checkout(props) {
                   <th>Ghế VIP</th>
                   <th>Ghế đã được đặt</th>
                   <th>Ghế người dùng đặt</th>
+                  <th>Ghế khách đang đặt</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 <tr>
                   {/* Ghế chưa đặt */}
                   <td>
-                    <button className="ghe text-center"></button>
+                    <button className="ghe text-center">
+                      <SmileOutlined
+                        style={{ marginBottom: 7.5, fontWeight: "bold" }}
+                      />
+                    </button>
                   </td>
                   {/* Đang đặt */}
                   <td>
-                    <button className="ghe gheDangDat text-center"></button>
+                    <button className="ghe gheDangDat text-center">
+                      <SmileOutlined
+                        style={{ marginBottom: 7.5, fontWeight: "bold" }}
+                      />
+                    </button>
                   </td>
                   {/* VIP */}
                   <td>
-                    <button className="ghe gheVip text-center"></button>
+                    <button className="ghe gheVip text-center">
+                      <SmileOutlined
+                        style={{ marginBottom: 7.5, fontWeight: "bold" }}
+                      />
+                    </button>
                   </td>
                   {/* Đã đặt */}
                   <td>
@@ -135,6 +204,14 @@ export default function Checkout(props) {
                   <td>
                     <button className="ghe gheNguoiDungDat text-center">
                       <SmileOutlined
+                        style={{ marginBottom: 7.5, fontWeight: "bold" }}
+                      />
+                    </button>
+                  </td>
+                  {/* Tài khoản người dùng khách đang đặt thông qua RealTime */}
+                  <td>
+                    <button className="ghe gheKhachDat text-center">
+                      <MehOutlined
                         style={{ marginBottom: 7.5, fontWeight: "bold" }}
                       />
                     </button>
@@ -207,7 +284,7 @@ export default function Checkout(props) {
                 const thongTinDatVe = new ThongTinDatVe();
                 thongTinDatVe.maLichChieu = props.match.params.id;
                 thongTinDatVe.danhSachVe = danhSachGheDangDat;
-                console.log("thongTinDatVe", thongTinDatVe);
+
                 dispatch(datVeAction(thongTinDatVe));
               }}
               className="bg-green-500 text-white w-full text-center py-3 font-bold text-2xl cursor-pointer"
@@ -217,6 +294,160 @@ export default function Checkout(props) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+//Component mới thay thế cho component Checkout
+const { TabPane } = Tabs;
+
+//onChange cho Tabs Antd
+// const onChange = (key) => {
+//   console.log(key);
+// };
+
+export default function (props) {
+  const { tabActive } = useSelector((state) => state.QuanLyDatVeReducer);
+  const { nguoiDungDangNhap } = useSelector(
+    (state) => state.QuanLyNguoiDungReducer
+  );
+  const dispatch = useDispatch();
+  const operations = (
+    <Fragment>
+      {!_.isEmpty(nguoiDungDangNhap) ? (
+        <Fragment>
+          <button
+            onClick={() => {
+              history.push("/profile");
+            }}
+          >
+            <div
+              style={{
+                width: "50px",
+                height: "50px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              className="ml-4 bg-red-200 rounded-full"
+            >
+              {nguoiDungDangNhap.taiKhoan.substr(0, 1)}
+            </div>
+            Hello, {nguoiDungDangNhap.taiKhoan}
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem(USER_LOGIN);
+              localStorage.removeItem(TOKEN);
+              history.push("/");
+            }}
+          >
+            Đăng xuất
+          </button>
+        </Fragment>
+      ) : (
+        "!"
+      )}
+    </Fragment>
+  );
+  return (
+    <div className="p-5">
+      <Tabs
+        tabBarExtraContent={operations}
+        defaultActiveKey="1"
+        activeKey={tabActive}
+        onChange={(key) => {
+          dispatch({
+            type: "CHUYEN_TAB_ACTIVE",
+            number: key.toString(),
+          });
+        }}
+      >
+        <TabPane tab="01 CHỌN GHẾ & THANH TOÁN" key="1">
+          <Checkout {...props} />
+        </TabPane>
+        <TabPane tab="02 KẾT QUẢ ĐẶT VÉ" key="2">
+          <KetQuaDatVe {...props} />
+        </TabPane>
+        <TabPane
+          tab={
+            <div
+              className="text-center"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <NavLink to="/">
+                <HomeOutlined
+                  className="text-black"
+                  style={{ marginLeft: 10, fontSize: 25 }}
+                />
+              </NavLink>
+            </div>
+          }
+          key="3"
+        ></TabPane>
+      </Tabs>
+    </div>
+  );
+}
+
+function KetQuaDatVe(props) {
+  const dispatch = useDispatch();
+  const { thongTinNguoiDung } = useSelector(
+    (state) => state.QuanLyNguoiDungReducer
+  );
+  useEffect(() => {
+    const action = layThongTinNguoiDungAction();
+    dispatch(action);
+  }, []);
+  const renderTicketItem = function () {
+    return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {
+      return (
+        <div className="p-2 lg:w-1/3 md:w-1/2 w-full" key={index}>
+          <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+            <img
+              alt="team"
+              className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+              src="https://picsum.photos/200/200"
+            />
+            <div className="flex-grow">
+              <h2 className="text-gray-900 title-font font-medium">
+                {ticket.tenPhim}
+              </h2>
+
+              <p className="text-gray-500">
+                Giờ chiếu: {moment(ticket.ngayDat).format("hh:mm A")} - Ngày
+                chiếu: {moment(ticket.ngayDat).format("DD/MM/YYYY")}
+              </p>
+              <p>
+                Địa điểm: {_.first(ticket.danhSachGhe).tenHeThongRap} -{" "}
+                {_.first(ticket.danhSachGhe).tenCumRap}
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    });
+  };
+
+  return (
+    <div className="p-5">
+      <section className="text-gray-600 body-font">
+        <div className="container px-5 py-24 mx-auto">
+          <div className="flex flex-col text-center w-full mb-20">
+            <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
+              Lịch sử đặt vé khách hàng
+            </h1>
+            <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
+              Hiển thị thông tin, địa điểm, giờ chiếu...
+            </p>
+          </div>
+          <div className="flex flex-wrap -m-2">{renderTicketItem()}</div>
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,8 +1,12 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Route } from "react-router-dom";
 import "../../pages/Login/Login.css";
 export const UserTemplate = (props) => {
   const { Component, ...restRoute } = props;
+  useEffect(() => {
+    //tự động load lên đầu trang khi vào lại trang
+    window.scrollTo(0, 0);
+  });
   return (
     <Route
       {...restRoute}

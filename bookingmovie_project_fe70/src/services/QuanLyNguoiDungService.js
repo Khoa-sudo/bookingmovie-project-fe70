@@ -5,10 +5,11 @@ export class QuanLyNguoiDungService extends baseService {
     super();
   }
   dangNhap = (thongTinNguoiDung) => {
-    return this.post(`/api/QuanLyNguoiDung/DangNhap`,thongTinNguoiDung);
+    return this.post(`/api/QuanLyNguoiDung/DangNhap`, thongTinNguoiDung);
   };
-  
+  layThongTinNguoiDung = () => {
+    return this.post(`/api/QuanLyNguoiDung/ThongTinTaiKhoan`);
+  };
 }
 
 export const quanLyNguoiDungService = new QuanLyNguoiDungService();
-

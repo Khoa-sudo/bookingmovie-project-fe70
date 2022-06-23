@@ -20,7 +20,6 @@ export default function Detail(props) {
     let { id } = props.match.params;
     dispatch(layThongTinChiTietPhim(id));
   }, [dispatch]);
-  console.log(chiTietPhim.heThongRapChieu);
   return (
     <div
       style={{
@@ -117,7 +116,6 @@ export default function Detail(props) {
                               <div className="thong-tin-lich-chieu grid grid-cols-4">
                                 {cumRap.lichChieuPhim?.map(
                                   (lichChieu, index) => {
-                                    console.log('sss', lichChieu.maLichChieu)
                                     return (
                                       <NavLink
                                         to={`/checkout/${lichChieu.maLichChieu}`}
