@@ -16,3 +16,15 @@ export const layDanhSachPhimAction = () => {
     }
   };
 };
+
+export const themPhimUploadHinhAction = (formData) => {
+  return async (dispatch) => {
+    try {
+      let result = await quanLyPhimService.themPhimUploadHinh(formData);
+      alert('Thêm thành công!')
+      console.log("result", result.data.content);
+    } catch (error) {
+      console.log(error.response.data)
+    }
+  };
+};

@@ -13,6 +13,11 @@ import CheckoutTemplate from "./templates/CheckoutTemplate/CheckoutTemplate";
 import { UserTemplate } from "./templates/UserTemplate/UserTemplate";
 import Loading from "./components/Loading/Loading";
 import Profile from "./pages/Profile/Profile";
+import AdminTemplate from "./templates/AdminTemplate/AdminTemplate";
+import Dashboard from "./pages/Admin/Dashboard.js/Dashboard";
+import Films from "./pages/Admin/Films/Films";
+import Users from "./pages/Admin/Users/Users";
+import AddNew from "./pages/Admin/Films/AddNew/AddNew";
 
 //sử dụng loading lazy
 
@@ -30,9 +35,14 @@ function App() {
         <HomeTemplate exact path="/detail/:id" Component={Detail} />
         <HomeTemplate exact path="/profile" Component={Profile} />
         <CheckoutTemplate exact path="/checkout/:id" Component={Checkout} />
-
+        
         <UserTemplate path="/login" exact Component={Login} />
         <UserTemplate path="/register" exact Component={Register} />
+
+        <AdminTemplate exact path="/admin" Component={Dashboard}/>
+        <AdminTemplate exact path="/admin/films" Component={Films}/>
+        <AdminTemplate exact path="/admin/films/addnew" Component={AddNew}/>
+        <AdminTemplate exact path="/admin/users" Component={Users}/>
       </Switch>
     </Router>
   );
