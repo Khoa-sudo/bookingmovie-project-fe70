@@ -1,24 +1,29 @@
 import React, { Fragment, useEffect } from "react";
 import { Button, Space, Table, Input } from "antd";
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { layDanhSachPhimAction } from "../../../redux/actions/QuanLyPhimAction";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { layDanhSachPhimAction, xoaPhimAction } from "../../../redux/actions/QuanLyPhimAction";
+import { EditOutlined, DeleteOutlined, CalendarOutlined } from "@ant-design/icons";
 import { history } from "../../../App";
 const { Search } = Input;
 
 const Films = () => {
-  const onSearch = (value) => console.log(value);
+  const onSearch = (value) => {
+    console.log(value)
+    //gọi API layDanhSachPhim
+    dispatch(layDanhSachPhimAction(value));
+
+  };
   const { arrFilmDefault } = useSelector((state) => state.QuanLyPhimReducer);
-  console.log(arrFilmDefault);
+
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
   };
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(layDanhSachPhimAction());
+    const action = layDanhSachPhimAction();
+    dispatch(action);
   }, []);
   //data của table
   const data = arrFilmDefault;
@@ -88,16 +93,41 @@ const Films = () => {
     },
     {
       title: "Hành động",
-      dataIndex: "action",
+      dataIndex: "maPhim",
       key: "5",
       render: (text, film) => {
         return (
           <Fragment>
-            <NavLink className="mr-2 text-2xl" to="/">
+            <NavLink
+              key={1}
+              className="mr-2 text-2xl"
+              to={`/admin/films/edit/${film.maPhim}`}
+            >
               <EditOutlined style={{ color: "blue" }} />
             </NavLink>
-            <NavLink className="text-2xl" to="/">
+            <span
+              style={{ cursor: "pointer" }}
+              key={2}
+              className="text-2xl"
+              to="/"
+              onClick={() => {
+                //Gọi action xoá
+                if (
+                  window.confirm("BẠN CÓ CHẮC MUỐN XOÁ PHIM" + film.tenPhim)
+                ) {
+                  //Gọi action
+                  dispatch(xoaPhimAction(film.maPhim))
+                }
+              }}
+            >
               <DeleteOutlined style={{ color: "red" }} />
+            </span>
+            <NavLink
+              key={3}
+              className="ml-2 text-2xl"
+              to={`/admin/films/showtime/${film.maPhim}`}
+            >
+              <CalendarOutlined style={{ color: "green" }} />
             </NavLink>
           </Fragment>
         );
@@ -112,8 +142,7 @@ const Films = () => {
       <Search
         placeholder="input search text"
         enterButton="Tìm kiếm"
-        size="large"
-        // suffix={suffix} //dấu micro
+        size="large"        
         onSearch={onSearch}
       />
 
@@ -123,12 +152,21 @@ const Films = () => {
           marginTop: 16,
         }}
       >
-        <Button onClick={()=>{
-          history.push('/admin/films/addnew')
-        }}>Thêm phim</Button>
+        <Button
+          onClick={() => {
+            history.push("/admin/films/addnew");
+          }}
+        >
+          Thêm phim
+        </Button>
       </Space>
 
-      <Table columns={columns} dataSource={data} onChange={onChange} />
+      <Table
+        rowKey={"maPhim"}
+        columns={columns}
+        dataSource={data}
+        onChange={onChange}
+      />
     </div>
   );
 };
