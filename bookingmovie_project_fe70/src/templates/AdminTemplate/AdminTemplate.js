@@ -1,13 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Layout, Menu, Breadcrumb } from "antd";
-import {
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
-  UserOutlined,
-  AlertOutlined,
-} from "@ant-design/icons";
+import { DesktopOutlined, FileOutlined, UserOutlined } from "@ant-design/icons";
 import { NavLink, Redirect, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { TOKEN, USER_LOGIN } from "../../util/settings/config";
@@ -42,13 +35,11 @@ export default function AdminTemplate(props) {
     <Fragment>
       {!_.isEmpty(nguoiDungDangNhap) ? (
         <Fragment>
-          
           <button
             onClick={() => {
               history.push("/profile");
             }}
           >
-            
             <div
               style={{
                 width: 50,
@@ -110,20 +101,8 @@ export default function AdminTemplate(props) {
                     </Menu.Item>
                   </SubMenu>
                   <Menu.Item key="3" icon={<DesktopOutlined />}>
-                    <NavLink to="/admin/showtimes">Showtime</NavLink>
+                    <NavLink to="/admin/films/showtime">Showtime</NavLink>
                   </Menu.Item>
-                  {/* <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-                        <Menu.Item key="3">Tom</Menu.Item>
-                        <Menu.Item key="4">Bill</Menu.Item>
-                        <Menu.Item key="5">Alex</Menu.Item>
-                    </SubMenu>
-                    <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-                        <Menu.Item key="6">Team 1</Menu.Item>
-                        <Menu.Item key="8">Team 2</Menu.Item>
-                    </SubMenu>
-                    <Menu.Item key="9" icon={<FileOutlined />}>
-                        Files
-                    </Menu.Item> */}
                 </Menu>
               </Sider>
               <Layout className="site-layout">
@@ -134,10 +113,7 @@ export default function AdminTemplate(props) {
                   <div className="text-right pr-10 pt-1">{operations}</div>
                 </Header>
                 <Content style={{ margin: "0 16px" }}>
-                  <Breadcrumb style={{ margin: "16px 0" }}>
-                    {/* <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item> */}
-                  </Breadcrumb>
+                  <Breadcrumb style={{ margin: "16px 0" }}></Breadcrumb>
                   <div
                     className="site-layout-background"
                     style={{ padding: 24, minHeight: "85vh" }}

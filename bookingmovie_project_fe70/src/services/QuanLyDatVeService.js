@@ -12,7 +12,10 @@ export class QuanLyDatVeService extends baseService {
     );
   };
   datVe = (thongTinDatVe = new ThongTinDatVe()) => {
-    return this.post(`/api/QuanLyDatVe/DatVe`,thongTinDatVe);
+    return this.post(`/api/QuanLyDatVe/DatVe`, thongTinDatVe);
+  };
+  taoLichChieu = (thongTinLichChieu) => {
+    return this.post(`/api/QuanLyDatVe/TaoLichChieu`, thongTinLichChieu);
   };
 }
 

@@ -18,6 +18,8 @@ import Dashboard from "./pages/Admin/Dashboard.js/Dashboard";
 import Films from "./pages/Admin/Films/Films";
 import Users from "./pages/Admin/Users/Users";
 import AddNew from "./pages/Admin/Films/AddNew/AddNew";
+import EditFilm from "./pages/Admin/Films/EditFilm/EditFilm";
+import Showtime from "./pages/Admin/Films/Showtime/Showtime";
 
 //sử dụng loading lazy
 
@@ -42,6 +44,8 @@ function App() {
         <AdminTemplate exact path="/admin" Component={Dashboard}/>
         <AdminTemplate exact path="/admin/films" Component={Films}/>
         <AdminTemplate exact path="/admin/films/addnew" Component={AddNew}/>
+        <AdminTemplate exact path="/admin/films/edit/:id" Component={EditFilm}/>
+        <AdminTemplate exact path="/admin/films/showtime/:id" Component={Showtime}/>
         <AdminTemplate exact path="/admin/users" Component={Users}/>
       </Switch>
     </Router>

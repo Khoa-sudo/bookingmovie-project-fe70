@@ -39,7 +39,10 @@ export class baseService {
     return Axios({
       url: `${DOMAIN}/${url}`,
       method: "DELETE",
-      headers: { Authorization: "Bearer " + localStorage.getItem(TOKEN) }, //token yêu cầu từ backend chứng minh user đã đăng nhập rồi
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem(TOKEN),
+        TokenCybersoft: TOKEN_CYBERSOFT,
+       }, //token yêu cầu từ backend chứng minh user đã đăng nhập rồi
     });
   };
 }
